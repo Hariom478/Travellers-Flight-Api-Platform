@@ -1,0 +1,120 @@
+{
+  "Flight": {
+    "Flight_Module": "active",
+    "flight_booking_list": "active",
+    "flight_markup_list": "active",
+    "add_flight_markup": "active",
+    "edit_flight_markup": "active",
+    "flight_markup_status": "active",
+    "delete_flight_markup": "active",
+    "flight_amendment_list": "active",
+    "flight_credit_notes": "active",
+    "flight_group_ticket": "active",
+    "flight_calender": "active"
+  },
+  "Visa": {
+    "Visa_Module": "active",
+    "visa_booking_list": "active"
+  },
+  "Cruise": {
+    "Cruise_Module": "active",
+    "cruise_booking_list": "active",
+    "cruise_markup_list": "active",
+    "add_cruise_markup": "active",
+    "edit_cruise_markup": "active",
+    "cruise_markup_status": "active",
+    "delete_cruise_markup": "active",
+    "cruise_amendment_list": "active",
+    "cruise_refund_list": "active"
+  },
+  "CarExtranet": {
+    "CarExtranet_Module": "active",
+    "car_booking_list": "active",
+    "car_markup_list": "active",
+    "add_car_markup": "active",
+    "edit_car_markup": "active",
+    "car_markup_status": "active",
+    "delete_car_markup": "active",
+    "car_amendment_list": "active"
+  },
+  "Bus": {
+    "Bus_Module": "active",
+    "bus_booking_list": "active",
+    "bus_markup_list": "active",
+    "add_bus_markup": "active",
+    "edit_bus_markup": "active",
+    "bus_markup_status": "active",
+    "bus_group_ticket": "active",
+    "bus_amendment_list": "active",
+    "delete_bus_markup": "active"
+  },
+  "Hotel": {
+    "Hotel_Module": "active",
+    "hotel_booking_list": "active",
+    "hotel_amendment_list": "active",
+    "hotel_group_ticket": "active",
+    "hotel_markup_list": "active",
+    "add_hotel_markup": "active",
+    "edit_hotel_markup": "active",
+    "hotel_markup_status": "active",
+    "delete_hotel_markup": "active"
+  },
+  "Holiday": {
+    "Holiday_Module": "active",
+    "holiday_booking_list": "active",
+    "holiday_markup_list": "active",
+    "holiday_markup_add": "active",
+    "holiday_markup_edit": "active",
+    "holiday_markup_change_status": "active",
+    "holiday_amendment_list": "active",
+    "holiday_refund_list": "active",
+    "holiday_markup_delete": "active"
+  },
+  "Setting": {
+    "Setting_Module": "active",
+    "edit_company_setting": "active",
+    "staff_list": "active",
+    "add_staff": "active",
+    "edit_staff": "active",
+    "delete_staff": "active",
+    "staff_status": "active",
+    "staff_permissions": "active",
+    "delete_documents": "active"
+  },
+  "TourGuide": {
+    "TourGuide_Module": "active",
+    "tourguide_markup_list": "active",
+    "tourguide_markup_add": "active",
+    "tourguide_markup_edit": "active",
+    "tourguide_markup_delete": "active",
+    "tourguide_markup_change_status": "active",
+    "tour_amendment_list": "active",
+    "tourguide_booking_list": "active"
+  },
+  "Activities": {
+    "Activities_Module": "active",
+    "activities_booking_list": "active",
+    "activities_markup_list": "active",
+    "activities_markup_add": "active",
+    "activities_markup_edit": "active",
+    "activities_markup_delete": "active",
+    "activities_amendment_list": "active",
+    "activities_markup_change_status": "active"
+  },
+  "Accounts": {
+    "Accounts_Module": "active",
+    "add_offline_make_payment": "active",
+    "payment_history_list": "active",
+    "agent_account_log_list": "active",
+    "sales_and_mis_list": "active",
+    "bus_sales_report_list": "active",
+    "flight_sales_report_list": "active",
+    "holiday_sales_report_list": "active",
+    "visa_sales_report_list": "active",
+    "car_sales_report_list": "active",
+    "cruise_sales_report_list": "active",
+    "agent_debit_logs": "active",
+    "agent_invoice": "active",
+    "hotel_sales_report_list": "active"
+  }
+}

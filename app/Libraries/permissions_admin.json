@@ -1,0 +1,41 @@
+{
+  "Flight": {
+    "Flight_Module": "active",
+    "flight_booking_list": "active"
+  },
+  "Visa": {
+    "Visa_Module": "active",
+    "visa_booking_list": "active"
+  },
+  "Cruise": {
+    "Cruise_Module": "active",
+    "cruise_booking_list": "active"
+  },
+  "CarExtranet": {
+    "CarExtranet_Module": "active",
+    "car_booking_list": "active"
+  },
+  "Bus": {
+    "Bus_Module": "active",
+    "bus_booking_list": "active"
+  },
+  "Hotel": {
+    "Hotel_Module": "active",
+    "hotel_booking_list": "active"
+  },
+  "Holiday": {
+    "Holiday_Module": "active",
+    "holiday_booking_list": "active"
+  },
+  "Setting": {
+    "Setting_Module": "active",
+    "edit_company_setting": "active",
+    "staff_list": "active",
+    "add_staff": "active",
+    "edit_staff": "active",
+    "delete_staff": "active",
+    "staff_status": "active",
+    "staff_permissions": "active",
+    "delete_documents": "active"
+  }
+}

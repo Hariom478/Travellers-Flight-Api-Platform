@@ -1,0 +1,15 @@
+{
+    "name": "liamtra/tts-excel-deps",
+    "description": "PhpSpreadsheet + its dependencies for the Travellers-Flight-Api-Platform admin panel (adminpanel/). Installs straight into vendor/excel so require 'vendor/excel/autoload.php' keeps working unchanged. Was previously committed pre-built at vendor/excel on phpoffice/phpspreadsheet 1.21.0, which has known security advisories - upgraded here to a patched 1.x release.",
+    "require": {
+        "phpoffice/phpspreadsheet": "^1.29",
+        "psr/simple-cache": "^1.0"
+    },
+    "config": {
+        "vendor-dir": "../../vendor/excel",
+        "platform": {
+            "php": "7.4"
+        },
+        "sort-packages": true
+    }
+}

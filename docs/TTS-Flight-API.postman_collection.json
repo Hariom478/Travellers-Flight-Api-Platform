@@ -1,0 +1,534 @@
+{
+  "info": {
+    "name": "TTS Flight API (api/ folder)",
+    "_postman_id": "f1e4d2a0-1234-4abc-9def-000000000001",
+    "description": "Collection built from api/app/Modules (Airservice = flight, Holidayservice = holiday). Every route under /rest/* needs the Username/Password headers (see Auth filter: api/app/Filters/Auth.php). TBOFlight/GALFlight/Indigo/CRSFlight have no public routes of their own - Airservice\\Rest dispatches to them internally based on the active supplier, so Search/FareConfirmation/Book/Ticket below cover all suppliers.\n\nFlow: Search -> FareRule/FareConfirmation -> SSR (optional) -> Book (GDS) or Ticket (LCC) -> GetBookingDetail. Every request/response is matched by SearchTokenId (from Search) and ResultIndex (from the chosen Search result), so run requests in that order and copy those two values forward.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "noauth"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://127.0.0.1:8080/api", "description": "Front controller of the api/ app. Use https://<your-domain>/api on a real server." },
+    { "key": "apiUsername", "value": "", "description": "Value for the Username header - the api_username issued to a web partner (table api_webpartner_setting)." },
+    { "key": "apiPassword", "value": "", "description": "Value for the Password header - the matching api_password." },
+    { "key": "SearchTokenId", "value": "", "description": "Filled in automatically by the Search request's test script." },
+    { "key": "ResultIndex", "value": "", "description": "Set manually after Search: pick one key from Result[].ResultIndex in the search response." },
+    { "key": "BookingId", "value": "" },
+    { "key": "PNR", "value": "" },
+    { "key": "UserIp", "value": "1.2.3.4" }
+  ],
+  "item": [
+    {
+      "name": "Flight (Airservice)",
+      "item": [
+        {
+          "name": "Search",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Username", "value": "{{apiUsername}}" },
+              { "key": "Password", "value": "{{apiPassword}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/airservice/rest/search", "host": ["{{baseUrl}}"], "path": ["airservice", "rest", "search"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"UserIp\": \"{{UserIp}}\",\n  \"Adult\": 1,\n  \"Child\": 0,\n  \"Infant\": 0,\n  \"DirectFlight\": false,\n  \"JourneyType\": 1,\n  \"PreferredCarriers\": [],\n  \"CabinClass\": 1,\n  \"Supplier\": \"\",\n  \"Sources\": \"\",\n  \"AirSegments\": [\n    {\n      \"Origin\": \"DEL\",\n      \"Destination\": \"BOM\",\n      \"PreferredTime\": \"2026-12-15\"\n    }\n  ]\n}"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Auto-capture the search token for the next requests in this collection",
+                  "try {",
+                  "    const json = pm.response.json();",
+                  "    if (json.SearchTokenId) {",
+                  "        pm.collectionVariables.set('SearchTokenId', json.SearchTokenId);",
+                  "    }",
+                  "} catch (e) {}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Calendar Fare",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Username", "value": "{{apiUsername}}" },
+              { "key": "Password", "value": "{{apiPassword}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/airservice/rest/getcalendarfare", "host": ["{{baseUrl}}"], "path": ["airservice", "rest", "getcalendarfare"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"UserIp\": \"{{UserIp}}\",\n  \"Adult\": 1,\n  \"Child\": 0,\n  \"Infant\": 0,\n  \"JourneyType\": 1,\n  \"PreferredCarriers\": [],\n  \"CabinClass\": 1,\n  \"Sources\": \"\",\n  \"AirSegments\": [\n    {\n      \"Origin\": \"DEL\",\n      \"Destination\": \"BOM\",\n      \"PreferredTime\": \"2026-12-15\"\n    }\n  ]\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Fare Rule",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Username", "value": "{{apiUsername}}" },
+              { "key": "Password", "value": "{{apiPassword}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/airservice/rest/farerule", "host": ["{{baseUrl}}"], "path": ["airservice", "rest", "farerule"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"UserIp\": \"{{UserIp}}\",\n  \"SearchTokenId\": \"{{SearchTokenId}}\",\n  \"ResultIndex\": \"{{ResultIndex}}\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Fare Confirmation",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Username", "value": "{{apiUsername}}" },
+              { "key": "Password", "value": "{{apiPassword}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/airservice/rest/fareconfirmation", "host": ["{{baseUrl}}"], "path": ["airservice", "rest", "fareconfirmation"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"UserIp\": \"{{UserIp}}\",\n  \"SearchTokenId\": \"{{SearchTokenId}}\",\n  \"ResultIndex\": \"{{ResultIndex}}\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "SSR",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Username", "value": "{{apiUsername}}" },
+              { "key": "Password", "value": "{{apiPassword}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/airservice/rest/ssr", "host": ["{{baseUrl}}"], "path": ["airservice", "rest", "ssr"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"UserIp\": \"{{UserIp}}\",\n  \"SearchTokenId\": \"{{SearchTokenId}}\",\n  \"ResultIndex\": \"{{ResultIndex}}\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Book (GDS/non-LCC)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Username", "value": "{{apiUsername}}" },
+              { "key": "Password", "value": "{{apiPassword}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/airservice/rest/book", "host": ["{{baseUrl}}"], "path": ["airservice", "rest", "book"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"UserIp\": \"{{UserIp}}\",\n  \"SearchTokenId\": \"{{SearchTokenId}}\",\n  \"ResultIndex\": \"{{ResultIndex}}\",\n  \"Passengers\": [\n    {\n      \"Title\": \"Mr\",\n      \"FirstName\": \"John\",\n      \"LastName\": \"Doe\",\n      \"PaxType\": 1,\n      \"Gender\": 1,\n      \"DateOfBirth\": \"\",\n      \"IsLeadPax\": true,\n      \"FFAirline\": \"\",\n      \"FFNumber\": \"\",\n      \"PAN\": \"\",\n      \"Nationality\": \"IN\",\n      \"PassportNo\": \"\",\n      \"PassportExpiry\": \"\",\n      \"AddressLine1\": \"221B Baker Street\",\n      \"AddressLine2\": \"\",\n      \"City\": \"New Delhi\",\n      \"CountryCode\": \"IN\",\n      \"CountryName\": \"India\",\n      \"ContactNo\": \"9876543210\",\n      \"Email\": \"john.doe@example.com\",\n      \"GSTNumber\": \"\",\n      \"GSTCompanyName\": \"\",\n      \"GSTCompanyAddress\": \"\",\n      \"GSTCompanyContactNumber\": \"\",\n      \"GSTCompanyEmail\": \"\"\n    }\n  ]\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Ticket (LCC)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Username", "value": "{{apiUsername}}" },
+              { "key": "Password", "value": "{{apiPassword}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/airservice/rest/ticket", "host": ["{{baseUrl}}"], "path": ["airservice", "rest", "ticket"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"UserIp\": \"{{UserIp}}\",\n  \"SearchTokenId\": \"{{SearchTokenId}}\",\n  \"ResultIndex\": \"{{ResultIndex}}\",\n  \"BookingId\": \"{{BookingId}}\",\n  \"PNR\": \"{{PNR}}\",\n  \"Passengers\": [\n    {\n      \"Title\": \"Mr\",\n      \"FirstName\": \"John\",\n      \"LastName\": \"Doe\",\n      \"PaxType\": 1,\n      \"Gender\": 1,\n      \"DateOfBirth\": \"\",\n      \"IsLeadPax\": true,\n      \"ContactNo\": \"9876543210\",\n      \"Email\": \"john.doe@example.com\"\n    }\n  ]\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Booking Detail",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Username", "value": "{{apiUsername}}" },
+              { "key": "Password", "value": "{{apiPassword}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/airservice/rest/getbookingdetail", "host": ["{{baseUrl}}"], "path": ["airservice", "rest", "getbookingdetail"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"UserIp\": \"{{UserIp}}\",\n  \"SearchTokenId\": \"{{SearchTokenId}}\",\n  \"BookingId\": \"{{BookingId}}\",\n  \"PNR\": \"{{PNR}}\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Cancellation Charges",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Username", "value": "{{apiUsername}}" },
+              { "key": "Password", "value": "{{apiPassword}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/airservice/rest/cancellationcharges", "host": ["{{baseUrl}}"], "path": ["airservice", "rest", "cancellationcharges"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"UserIp\": \"{{UserIp}}\",\n  \"SearchTokenId\": \"{{SearchTokenId}}\",\n  \"BookingId\": \"{{BookingId}}\",\n  \"RequestType\": \"FullCancellation\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel Request",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Username", "value": "{{apiUsername}}" },
+              { "key": "Password", "value": "{{apiPassword}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/airservice/rest/cancelrequest", "host": ["{{baseUrl}}"], "path": ["airservice", "rest", "cancelrequest"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"UserIp\": \"{{UserIp}}\",\n  \"SearchTokenId\": \"{{SearchTokenId}}\",\n  \"BookingId\": \"{{BookingId}}\",\n  \"RequestType\": \"FullCancellation\",\n  \"Remark\": \"Customer requested cancellation\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Change Request Status",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Username", "value": "{{apiUsername}}" },
+              { "key": "Password", "value": "{{apiPassword}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/airservice/rest/cancelstatus", "host": ["{{baseUrl}}"], "path": ["airservice", "rest", "cancelstatus"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"UserIp\": \"{{UserIp}}\",\n  \"SearchTokenId\": \"{{SearchTokenId}}\",\n  \"BookingId\": \"{{BookingId}}\",\n  \"PaxId\": [\"1\"]\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Submit Amendment",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Username", "value": "{{apiUsername}}" },
+              { "key": "Password", "value": "{{apiPassword}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/airservice/rest/submitamendment", "host": ["{{baseUrl}}"], "path": ["airservice", "rest", "submitamendment"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"BookingId\": \"{{BookingId}}\",\n  \"Type\": \"cancellation\",\n  \"Remarks\": \"Customer requested\",\n  \"RequesterInfo\": {\n    \"Requester\": \"WebPartner\",\n    \"RequesterId\": \"1\"\n  },\n  \"Sectors\": [\n    { \"Origin\": \"DEL\", \"Destination\": \"BOM\" }\n  ],\n  \"PaxId\": [\"1\"]\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Logs (unauthenticated route)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/airservice/rest/get-logs/{{BookingId}}", "host": ["{{baseUrl}}"], "path": ["airservice", "rest", "get-logs", "{{BookingId}}"] },
+            "description": "NOTE: per api/app/Modules/Airservice/Config/Routes.php this route sits outside the 'auth' filter group, so no Username/Password headers are required or checked. Flagged in the security review as an access-control gap; add auth/authorization before relying on it."
+          },
+          "response": []
+        },
+        {
+          "name": "Generate Ticket Invoice (unauthenticated route)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/airservice/rest/generate-ticket-invoice", "host": ["{{baseUrl}}"], "path": ["airservice", "rest", "generate-ticket-invoice"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"HtmlType\": \"Ticket\",\n  \"SearchTokenId\": \"{{SearchTokenId}}\",\n  \"BookingId\": [\"{{BookingId}}\"],\n  \"UserType\": \"WebPartner\",\n  \"WithPrice\": \"1\",\n  \"WithAgencyDetail\": \"1\",\n  \"TicketInvoiceJourney\": \"Onward\",\n  \"ViewService\": \"View\",\n  \"ViewSize\": \"\"\n}"
+            },
+            "description": "NOTE: not inside the 'auth' filter group in Routes.php, so Username/Password headers are not required. Flagged in the security review."
+          },
+          "response": []
+        },
+        {
+          "name": "Generate WL Ticket Invoice (unauthenticated route)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/airservice/rest/generate-wl-ticket-invoice", "host": ["{{baseUrl}}"], "path": ["airservice", "rest", "generate-wl-ticket-invoice"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"HtmlType\": \"AgencyInvoice\",\n  \"SearchTokenId\": \"{{SearchTokenId}}\",\n  \"BookingId\": [\"{{BookingId}}\"],\n  \"UserType\": \"wl-agent\",\n  \"WithPrice\": \"1\",\n  \"WithAgencyDetail\": \"1\",\n  \"TicketInvoiceJourney\": \"Both\",\n  \"ViewService\": \"View\",\n  \"ViewSize\": \"\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Generate Credit Note (unauthenticated route)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/airservice/rest/generate-credit-note", "host": ["{{baseUrl}}"], "path": ["airservice", "rest", "generate-credit-note"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"HtmlType\": \"CreditNote\",\n  \"SearchTokenId\": \"{{SearchTokenId}}\",\n  \"BookingId\": [\"{{BookingId}}\"],\n  \"UserType\": \"WebPartner\",\n  \"WithPrice\": \"1\",\n  \"WithAgencyDetail\": \"1\",\n  \"TicketInvoiceJourney\": \"Both\",\n  \"ViewService\": \"View\",\n  \"ViewSize\": \"\"\n}"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Holiday (Holidayservice)",
+      "item": [
+        {
+          "name": "Themes",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Username", "value": "{{apiUsername}}" },
+              { "key": "Password", "value": "{{apiPassword}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/holidayservice/rest/themes", "host": ["{{baseUrl}}"], "path": ["holidayservice", "rest", "themes"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Themes By Slug",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Username", "value": "{{apiUsername}}" },
+              { "key": "Password", "value": "{{apiPassword}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/holidayservice/rest/get-themes-by-slug?slug=honeymoon",
+              "host": ["{{baseUrl}}"],
+              "path": ["holidayservice", "rest", "get-themes-by-slug"],
+              "query": [{ "key": "slug", "value": "honeymoon" }]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Destinations By Slug",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Username", "value": "{{apiUsername}}" },
+              { "key": "Password", "value": "{{apiPassword}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/holidayservice/rest/get-destinations-by-slug?slug=goa",
+              "host": ["{{baseUrl}}"],
+              "path": ["holidayservice", "rest", "get-destinations-by-slug"],
+              "query": [{ "key": "slug", "value": "goa" }]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Holiday List",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Username", "value": "{{apiUsername}}" },
+              { "key": "Password", "value": "{{apiPassword}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/holidayservice/rest/holiday-list", "host": ["{{baseUrl}}"], "path": ["holidayservice", "rest", "holiday-list"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Holiday Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Username", "value": "{{apiUsername}}" },
+              { "key": "Password", "value": "{{apiPassword}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/holidayservice/rest/holiday-details?slug=goa-beach-escape",
+              "host": ["{{baseUrl}}"],
+              "path": ["holidayservice", "rest", "holiday-details"],
+              "query": [{ "key": "slug", "value": "goa-beach-escape" }]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Search (by id/tag)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Username", "value": "{{apiUsername}}" },
+              { "key": "Password", "value": "{{apiPassword}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/holidayservice/rest/search?id=1&tag=Themes",
+              "host": ["{{baseUrl}}"],
+              "path": ["holidayservice", "rest", "search"],
+              "query": [
+                { "key": "id", "value": "1" },
+                { "key": "tag", "value": "Themes" }
+              ]
+            },
+            "description": "Security review flagged this endpoint: 'id' and 'tag' are concatenated into SQL (find_in_set) with no sanitization. Treat it as untrusted until fixed - only send known-good values from this collection."
+          },
+          "response": []
+        },
+        {
+          "name": "Block Holiday",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Username", "value": "{{apiUsername}}" },
+              { "key": "Password", "value": "{{apiPassword}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/holidayservice/rest/block-holiday", "host": ["{{baseUrl}}"], "path": ["holidayservice", "rest", "block-holiday"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"UserIp\": \"{{UserIp}}\",\n  \"HolidayId\": \"1\",\n  \"TravelDate\": \"2026-12-20\",\n  \"HolidayCategory\": \"Standard\",\n  \"PriceId\": \"1\",\n  \"SearchTokenId\": \"{{SearchTokenId}}\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Holiday Block Detail",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Username", "value": "{{apiUsername}}" },
+              { "key": "Password", "value": "{{apiPassword}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/holidayservice/rest/holiday-block-detail", "host": ["{{baseUrl}}"], "path": ["holidayservice", "rest", "holiday-block-detail"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"SearchTokenId\": \"{{SearchTokenId}}\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Submit Amendment",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Username", "value": "{{apiUsername}}" },
+              { "key": "Password", "value": "{{apiPassword}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/holidayservice/rest/submitamendment", "host": ["{{baseUrl}}"], "path": ["holidayservice", "rest", "submitamendment"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"BookingId\": \"{{BookingId}}\",\n  \"Type\": \"cancellation\",\n  \"Remarks\": \"Customer requested\",\n  \"RequesterInfo\": {\n    \"Requester\": \"WebPartner\",\n    \"RequesterId\": \"1\"\n  }\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Generate Voucher Invoice (unauthenticated route)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/holidayservice/rest/generate-voucher-invoice", "host": ["{{baseUrl}}"], "path": ["holidayservice", "rest", "generate-voucher-invoice"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"HtmlType\": \"Ticket\",\n  \"BookingId\": \"{{BookingId}}\",\n  \"SearchTokenId\": \"{{SearchTokenId}}\",\n  \"UserType\": \"WebPartner\",\n  \"ViewService\": \"View\",\n  \"ViewSize\": \"\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Generate WL Voucher Invoice (unauthenticated route)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/holidayservice/rest/generate-wl-voucher-invoice", "host": ["{{baseUrl}}"], "path": ["holidayservice", "rest", "generate-wl-voucher-invoice"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"HtmlType\": \"AgencyInvoice\",\n  \"BookingId\": \"{{BookingId}}\",\n  \"SearchTokenId\": \"{{SearchTokenId}}\",\n  \"UserType\": \"wl-agent\",\n  \"ViewService\": \"View\",\n  \"ViewSize\": \"\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Generate Credit Note (unauthenticated route)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/holidayservice/rest/generate-credit-note", "host": ["{{baseUrl}}"], "path": ["holidayservice", "rest", "generate-credit-note"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"HtmlType\": \"CreditNote\",\n  \"BookingId\": \"{{BookingId}}\",\n  \"SearchTokenId\": \"{{SearchTokenId}}\",\n  \"UserType\": \"WebPartner\",\n  \"ViewService\": \"View\",\n  \"ViewSize\": \"\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Generate WL Credit Note (unauthenticated route)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/holidayservice/rest/generate-wl-credit-note", "host": ["{{baseUrl}}"], "path": ["holidayservice", "rest", "generate-wl-credit-note"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"HtmlType\": \"CreditNote\",\n  \"BookingId\": \"{{BookingId}}\",\n  \"SearchTokenId\": \"{{SearchTokenId}}\",\n  \"UserType\": \"wl-agent\",\n  \"ViewService\": \"View\",\n  \"ViewSize\": \"\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin Submit Amendment (unauthenticated route)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/holidayservice/rest/adminsubmitamendment", "host": ["{{baseUrl}}"], "path": ["holidayservice", "rest", "adminsubmitamendment"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"WebPartnerId\": \"1\",\n  \"BookingId\": \"{{BookingId}}\",\n  \"AmendmentId\": \"\",\n  \"AmendmentStatus\": \"\",\n  \"Remarks\": \"Admin note\",\n  \"RequesterInfo\": { \"Requester\": \"SuperAdmin\" }\n}"
+            },
+            "description": "NOTE: not inside the 'auth' filter group. Security review flagged this and the WebPartnerId being client-supplied as an access-control gap."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

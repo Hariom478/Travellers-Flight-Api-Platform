@@ -1,0 +1,78 @@
+#--------------------------------------------------------------------
+# Secrets: each server keeps its own .env (live creds on live, test creds on stage).
+# Commit only the .env.example templates.
+#--------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+
+#--------------------------------------------------------------------
+# Runtime data written by the three CodeIgniter apps
+# (logs, sessions, cache, debug toolbar dumps, supplier request/response logs
+#  - these contain passenger PII and request headers)
+#--------------------------------------------------------------------
+/writable/**
+/api/writable/**
+/adminpanel/writable/**
+!/writable/**/
+!/api/writable/**/
+!/adminpanel/writable/**/
+!/writable/.htaccess
+!/api/writable/.htaccess
+!/adminpanel/writable/.htaccess
+!**/writable/**/index.html
+!**/writable/**/.gitkeep
+
+error_log
+*.log
+
+#--------------------------------------------------------------------
+# User uploads with personal / KYC / payment documents
+# (Aadhaar, PAN, GST, payment proofs). Site assets like airline-images stay tracked.
+#--------------------------------------------------------------------
+/uploads/agent/**
+/uploads/customer/**
+/uploads/make_payment/**
+/uploads/web_partner/**
+/api/uploads/**
+!/uploads/agent/**/
+!/uploads/customer/**/
+!/uploads/make_payment/**/
+!/uploads/web_partner/**/
+!/api/uploads/**/
+!/uploads/**/index.html
+!/uploads/**/.gitkeep
+!/api/uploads/**/.gitkeep
+
+#--------------------------------------------------------------------
+# Composer-managed dependencies (PhpSpreadsheet, PHPMailer).
+# Restore with: bash composer/install.sh
+# composer/*/composer.json + composer.lock stay tracked; only the
+# generated vendor/ output is ignored.
+#--------------------------------------------------------------------
+/vendor/
+/adminpanel/vendor/
+
+#--------------------------------------------------------------------
+# Old backups and archives (they still contain the old hardcoded credentials)
+#--------------------------------------------------------------------
+/api/app/Modules/bkp/
+/api/app/Modules/*_bck/
+/api/app/Modules/Holidayservice/Controllers/Rest_18-11-2023.php
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.sql
+*.sql.gz
+*.bak
+
+#--------------------------------------------------------------------
+# OS / editor
+#--------------------------------------------------------------------
+.DS_Store
+._*
+Thumbs.db
+.idea/
+.vscode/
+*.swp

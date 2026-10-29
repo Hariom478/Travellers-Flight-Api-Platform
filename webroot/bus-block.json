@@ -1,0 +1,146 @@
+{
+  "UserIp": "122.161.75.76",
+  "SearchTokenId": "a5fce4d3fc70020e9ae38d48166d038f33a10dd7",
+  "Error": {
+    "ErrorCode": 0,
+    "ErrorMessage": ""
+  },
+  "Result": {
+    "IsPriceChanged": false,
+    "ArrivalTime": "07\/29\/2022 09:00:00",
+    "BusType": "Isuzu A\/C Seater\/Sleeper Executive Luxury (1+1)",
+    "DepartureTime": "07\/28\/2022 20:00:00",
+    "TravelName": "TESTING ACCOUNT",
+    "BoardingPointdetails": {
+      "CityPointAddress": "Indra Nagar",
+      "CityPointContactNumber": "98765432234",
+      "CityPointIndex": 1,
+      "CityPointLandmark": "Nandana Hotel",
+      "CityPointLocation": "Indian Express",
+      "CityPointName": "Indian Express",
+      "CityPointTime": "2022-07-28T20:00:00"
+    },
+    "CancelPolicy": [
+      {
+        "CancellationCharge": 10,
+        "CancellationChargeType": 2,
+        "PolicyString": "Till 15:00 on 27 Jul 2022",
+        "TimeBeforeDept": "29$-1",
+        "FromDate": "2022-07-27T13:10:11",
+        "ToDate": "2022-07-27T15:00:00"
+      },
+      {
+        "CancellationCharge": 50,
+        "CancellationChargeType": 2,
+        "PolicyString": "Between 15:00 on 27 Jul 2022 - 03:00 on 28 Jul 2022",
+        "TimeBeforeDept": "17$29",
+        "FromDate": "2022-07-27T15:00:00",
+        "ToDate": "2022-07-28T03:00:00"
+      },
+      {
+        "CancellationCharge": 100,
+        "CancellationChargeType": 2,
+        "PolicyString": "After 03:00 on 28 Jul 2022",
+        "TimeBeforeDept": "0$17",
+        "FromDate": "2022-07-28T03:00:00",
+        "ToDate": "2022-07-29T09:00:00"
+      }
+    ],
+    "Passenger": [
+      {
+        "LeadPassenger": true,
+        "Title": "Mr",
+        "Address": "C-76",
+        "Age": 26,
+        "Email": "praveen@traveltechnologysolution.com",
+        "FirstName": "Praveen",
+        "Gender": 1,
+        "IdNumber": "JLOPK6571K",
+        "IdType": "PANCard",
+        "LastName": "Chaudhary",
+        "Phoneno": "8077281897",
+        "Seat": {
+          "ColumnNo": "008",
+          "Height": 1,
+          "IsLadiesSeat": false,
+          "IsMalesSeat": false,
+          "IsUpper": false,
+          "RowNo": "002",
+          "SeatFare": 275.5,
+          "SeatIndex": 19,
+          "SeatName": "19",
+          "SeatStatus": true,
+          "SeatType": 1,
+          "Width": 2,
+          "Price": {
+            "BasePrice": 157.5,
+            "Tax": 0,
+            "OtherCharges": 0,
+            "Discount": 50,
+            "PublishedPrice": 275.5,
+            "OfferedPrice": 221.56,
+            "AgentCommission": 3.94,
+            "ServiceCharges": 100,
+            "TDS": 2.7,
+            "GST": {
+              "CGSTAmount": 0,
+              "CGSTRate": 0,
+              "IGSTAmount": 18,
+              "IGSTRate": 18,
+              "SGSTAmount": 0,
+              "SGSTRate": 0,
+              "TaxableAmount": 100
+            }
+          }
+        }
+      },
+      {
+        "LeadPassenger": false,
+        "Title": "Mr",
+        "Address": "C-76",
+        "Age": 22,
+        "Email": "praveen@traveltechnologysolution.com",
+        "FirstName": "Manish",
+        "Gender": 1,
+        "IdNumber": "JLOPK6571F",
+        "IdType": "PANCard",
+        "LastName": "Chaudhary",
+        "Phoneno": "8077281897",
+        "Seat": {
+          "ColumnNo": "009",
+          "Height": 1,
+          "IsLadiesSeat": false,
+          "IsMalesSeat": false,
+          "IsUpper": true,
+          "RowNo": "000",
+          "SeatFare": 275.5,
+          "SeatIndex": 38,
+          "SeatName": "30",
+          "SeatStatus": true,
+          "SeatType": 1,
+          "Width": 2,
+          "Price": {
+            "BasePrice": 157.5,
+            "Tax": 0,
+            "OtherCharges": 0,
+            "Discount": 50,
+            "PublishedPrice": 275.5,
+            "OfferedPrice": 221.56,
+            "AgentCommission": 3.94,
+            "ServiceCharges": 100,
+            "TDS": 2.7,
+            "GST": {
+              "CGSTAmount": 0,
+              "CGSTRate": 0,
+              "IGSTAmount": 18,
+              "IGSTRate": 18,
+              "SGSTAmount": 0,
+              "SGSTRate": 0,
+              "TaxableAmount": 100
+            }
+          }
+        }
+      }
+    ]
+  }
+}

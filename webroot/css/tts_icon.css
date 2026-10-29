@@ -1,0 +1,194 @@
+.tts-icon {
+    display: inline-block;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    height: 16px;
+    width: 22px;
+    align-items: center;
+    justify-content: center;
+    background-repeat: no-repeat;
+}
+.tts-icon1 {
+    display: inline-block;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    height: 20px;
+    width: 20px;
+    align-items: center;
+    justify-content: center;
+    background-repeat: no-repeat;
+}
+.tts-icon2 {
+    display: inline-block;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    height: 30px!important;
+    width: 30px!important;
+    align-items: center;
+    justify-content: center;
+    background-repeat: no-repeat;
+}
+.notification {
+    background-image: url("icon/notification.svg");
+}
+
+.user {
+    background-image: url("icon/user.svg");
+}
+
+.user_profile {
+    background-image: url("icon/user_profile.svg");
+}
+
+.setting {
+    background-image: url("icon/setting.svg");
+}
+
+.signout {
+    background-image: url("icon/signout.svg");
+}
+
+.support {
+    background-image: url("icon/support.svg");
+}
+
+.add {
+    background-image: url("icon/add.svg");
+}
+.list {
+    background-image: url("icon/list.svg");
+}
+.swap {
+    background-image: url("icon/swap.svg");
+}
+
+.import {
+    background-image: url("icon/import.svg");
+}
+
+.export {
+    background-image: url("icon/export.svg");
+}
+
+.assign {
+    background-image: url("icon/assign.svg");
+}
+
+.delete {
+    background-image: url("icon/delete.svg");
+}
+.edit {
+    background-image: url("icon/edit.svg");
+}
+.whatsapp{
+    background-image: url("icon/whatsapp.svg");
+}
+
+.navigation{
+    background-image: url("icon/navigation.svg");
+}
+.skype{
+    background-image: url("icon/skype.svg");
+}
+.verified{
+    background-image: url("icon/verified.svg");
+}
+.notverified{
+    background-image: url("icon/notverified.svg");
+}
+.close-icon{
+    background-image: url("icon/close-icon.svg");
+}
+.information{
+    background-image: url("icon/information-sign.svg");
+}
+.seat-icon{
+    background-image: url("icon/seat.svg");
+}
+
+.flight-red {
+    background-image: url("icon/flight-color.svg") !important;
+}
+.flight-black{
+     background-image: url("icon/flight.svg");
+}
+.flight1{
+     background-image: url("icon/flight1.svg");
+}
+.flight2{
+     background-image: url("icon/flight2.svg");
+}
+
+.hotel-red {
+    background-image: url("icon/hotel-color.svg") !important;
+}
+.hotel-black{
+     background-image: url("icon/hotel.svg");
+}
+.hotel1{
+     background-image: url("icon/hotel1.svg");
+}
+.bus-red {
+    background-image: url("icon/bus-color.svg") !important;
+}
+.bus-black{
+     background-image: url("icon/bus.svg");
+}
+.bus1{
+     background-image: url("icon/bus1.svg");
+}
+.holiday-red {
+    background-image: url("icon/holiday-color.svg") !important;
+}
+.holiday-black{
+     background-image: url("icon/holiday.svg");
+}
+.holiday1{
+     background-image: url("icon/holiday1.svg");
+}
+.visa-red {
+    background-image: url("icon/visa-color.svg") !important;
+}
+.visa-black{
+     background-image: url("icon/visa.svg");
+}
+.visa1{
+     background-image: url("icon/visa1.svg");
+}
+.car-red {
+    background-image: url("icon/car-color.svg") !important;
+}
+.car-black{
+     background-image: url("icon/car.svg");
+}
+
+.car2{
+     background-image: url("icon/car2.svg");
+}
+.car1{
+     background-image: url("icon/car1.svg");
+}
+.car2{
+     background-image: url("icon/car2.svg");
+}
+.cruise-red {
+    background-image: url("icon/cruise-color.svg") !important;
+}
+.cruise-black{
+     background-image: url("icon/cruise.svg");
+}
+.cruise1{
+     background-image: url("icon/cruise1.svg");
+}
+.eye{
+     background-image: url("icon/eye.svg");
+}
+.dashboard{
+     background-image: url("icon/dashboard.svg");
+}

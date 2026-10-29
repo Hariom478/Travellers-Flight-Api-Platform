@@ -1,0 +1,13 @@
+{
+    "name": "liamtra/tts-phpmailer-deps",
+    "description": "PHPMailer for the Travellers-Flight-Api-Platform admin panel (adminpanel/). Installs straight into vendor/phpmailer so require 'vendor/phpmailer/autoload.php' keeps working unchanged. Was previously committed pre-built at vendor/phpmailer on phpmailer/phpmailer 6.1.4, which has known security advisories - upgraded here to a patched 6.x release.",
+    "require": {
+        "phpmailer/phpmailer": "^6.9"
+    },
+    "config": {
+        "vendor-dir": "../../vendor/phpmailer",
+        "platform": {
+            "php": "7.4"
+        }
+    }
+}
