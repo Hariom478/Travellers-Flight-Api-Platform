@@ -172,7 +172,7 @@
                      }
                   </script>
                   <script async
-                     src="https://maps.googleapis.com/maps/api/js?key=REDACTED_GOOGLE_MAPS_API_KEY_ROTATED&callback=initMap"></script>
+                     src="https://maps.googleapis.com/maps/api/js?key=<?php echo esc(env('google.mapsApiKey'), 'url'); ?>&callback=initMap"></script>
                </body>
             </html>
          </div>
