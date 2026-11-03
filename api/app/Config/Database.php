@@ -82,7 +82,8 @@ class Database extends Config
      * @var array
      */
     public $accountingsoftware = [
-        'DSN'      => 'pgsql:dbname=PortalIntegration;port=5432;host=103.104.73.92;user=sa;password=Info@##@2022',
+        // Connection details come from api/app/.env (database.accountingsoftware.DSN)
+        'DSN'      => '',
         'hostname' => '',
         'username' => '',
         'password' => '',

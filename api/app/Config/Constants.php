@@ -79,7 +79,9 @@ defined('EXIT__AUTO_MIN')      || define('EXIT__AUTO_MIN', 9); // lowest automat
 defined('EXIT__AUTO_MAX')      || define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
 
 /* Custom Define By Harish */
-defined('root_url') || define('root_url', "https://".$_SERVER['HTTP_HOST']."/");
+// TTS_LOCAL_DEV is only set by the local dev router (plain http); servers always use https
+$url_scheme = empty($_SERVER['TTS_LOCAL_DEV']) ? "https://" : "http://";
+defined('root_url') || define('root_url', $url_scheme.$_SERVER['HTTP_HOST']."/");
 
 defined('API_PREFIX') || define('API_PREFIX', "TTS");
 

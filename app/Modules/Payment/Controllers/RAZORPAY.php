@@ -8,13 +8,22 @@ use Razorpay\Api\Errors\SignatureVerificationError;
 class RAZORPAY extends BaseController
 {    
     
-    private $YOUR_KEY_ID = "rzp_live_YA2DuuMLsjlpMe";
-    private $YOUR_SECRET = "1xZDaVGsvKbvBf98Kx0TS96B"; 
-    /* private $YOUR_KEY_ID = "rzp_test_0wFfOQzqynTTQ6";
-    private $YOUR_SECRET = "3DGA7aCs4u8iIspgBihabS4q"; */ 
+    private $YOUR_KEY_ID;
+    private $YOUR_SECRET;
+
     public function initController(\CodeIgniter\HTTP\RequestInterface $request, \CodeIgniter\HTTP\ResponseInterface $response, \Psr\Log\LoggerInterface $logger)
     {
         parent::initController($request, $response, $logger);
+
+        // Live/Test and credentials both come from app/.env (razorpay.mode, razorpay.*)
+        $mode = strtolower(trim((string) env('razorpay.mode'))) === 'test' ? 'test' : 'live';
+        if ($mode === 'test') {
+            $this->YOUR_KEY_ID = (string) env('razorpay.test.keyId');
+            $this->YOUR_SECRET = (string) env('razorpay.test.secret');
+        } else {
+            $this->YOUR_KEY_ID = (string) env('razorpay.live.keyId');
+            $this->YOUR_SECRET = (string) env('razorpay.live.secret');
+        }
     }
     public function request($request) 
     {
