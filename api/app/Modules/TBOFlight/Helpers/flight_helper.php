@@ -109,6 +109,75 @@ function TBO_Request($url,$data) {
     }
 }
 
+/**
+ * ----------------------------------------------
+ * TBO API Request - multiple POST requests run in parallel over one
+ * cURL multi handle (same options/headers as TBO_Request) instead of
+ * one after another. Used by GetCalendarFare, which now fires one
+ * request per month (up to 12) and would otherwise take ~12x as long
+ * waiting for each month sequentially.
+ *
+ * $requests is an array keyed however the caller likes (e.g. 0..11);
+ * the returned array uses the same keys, each decoded the same way
+ * TBO_Request() would (null if that one request failed).
+ * ---------------------------------------------
+ */
+function TBO_MultiCurl_Request($url, array $requests)
+{
+    if (!$requests) {
+        return [];
+    }
+
+    $chs = [];
+    foreach ($requests as $key => $data) {
+        $request_json = json_encode($data);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_ENCODING, 'gzip');
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 20);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $request_json);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json',
+            'Accept: gzip,deflate',
+            'Cache-Control: no-cache',
+            'Pragma: no-cache',
+            'Content-Length: ' . strlen($request_json)));
+        $chs[$key] = $ch;
+    }
+
+    $mh = curl_multi_init();
+    foreach ($chs as $ch) {
+        curl_multi_add_handle($mh, $ch);
+    }
+
+    $active = null;
+    do {
+        $mrc = curl_multi_exec($mh, $active);
+    } while ($mrc == CURLM_CALL_MULTI_PERFORM);
+
+    while ($active && $mrc == CURLM_OK) {
+        if (curl_multi_select($mh) != -1) {
+            do {
+                $mrc = curl_multi_exec($mh, $active);
+            } while ($mrc == CURLM_CALL_MULTI_PERFORM);
+        }
+    }
+
+    $responses = [];
+    foreach ($chs as $key => $ch) {
+        $body = curl_multi_getcontent($ch);
+        $responses[$key] = $body ? json_decode($body, true) : null;
+        curl_multi_remove_handle($mh, $ch);
+        curl_close($ch);
+    }
+    curl_multi_close($mh);
+
+    return $responses;
+}
+
 function TBO_Other_Request($url, $data){
     $payload= json_encode($data);
     $ch = curl_init();

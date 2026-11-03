@@ -139,6 +139,10 @@ class TBOFlight extends BaseController
       );
       
       $url = "$this->AirService_URL/rest/Search/";
+
+      // echo "<pre>";
+      // print_r( $url );
+      // die;
       
       return array('Supplier' => 'TBO', 'URL' => $url, 'Request' => json_encode($request));
    }
@@ -305,80 +309,11 @@ class TBOFlight extends BaseController
    
    public function GetCalendarFare(array $input, $tts_search_token, array $userauthdata)
    {
-       
-    //   $totalPassenger=$input['Child']+$input['Adult']+$input['Infant'];
-    //   $class = $input['CabinClass'];
-    //   $segments = array();
-    //   $daysDiffrent = "";
-    //   $nextMonthSegment  =  array();
-    //   if ($input['AirSegments']) {
-    //      foreach ($input['AirSegments'] as $airsegment) {
-    //         $currentMonth  =  date("m");
-    //         $DepartureDate  =  explode("T", $airsegment['PreferredTime'])[0];
-    //         $DepartureMonth = date('m', strtotime($DepartureDate));
-    //         $maxDaysMonth = date('t', strtotime($DepartureDate));
-    //         $currentDayOfMonth = date('j', strtotime($DepartureDate));
-    //         $daysDiffrent  =  $maxDaysMonth - $currentDayOfMonth;
-    //         $segments[] = array(
-    //           'Origin' => $airsegment['Origin'],
-    //           'Destination' => $airsegment['Destination'],
-    //           'FlightCabinClass' => $class,
-    //           'PreferredDepartureTime' => $airsegment['PreferredTime'],
-    //           'PreferredArrivalTime' => $airsegment['PreferredTime'],
-    //         );
-    //      }
-    //      if (($currentMonth != $DepartureMonth)) {
-             
-    //         $nextMonthSegment =   $segments[0];
-    //         $DayYear = date('Y', strtotime("+1 months", strtotime($DepartureDate)));
-    //         $DayMonth = date('m', strtotime("+1 months", strtotime($DepartureDate)));
-    //         $nextMonthSegment['PreferredDepartureTime'] =   $DayYear . "-" . $DayMonth . "-" . "01" . "T" . "00:00:00";
-    //         $nextMonthSegment['PreferredArrivalTime'] =   $DayYear . "-" . $DayMonth . "-" . "01" . "T" . "00:00:00";
-            
-    //         $currentDateSegment = $segments[0];
-    //         $currentDateSegment['PreferredDepartureTime'] = date('Y-m-d') . 'T00:00:00';
-    //         $currentDateSegment['PreferredArrivalTime']   = date('Y-m-d') . 'T00:00:00';
-    //      }else
-    //      {
-    //         $nextMonthSegment =   $segments[0];
-    //         $DayYear = date('Y', strtotime("+1 months", strtotime($DepartureDate)));
-    //         $DayMonth = date('m', strtotime("+1 months", strtotime($DepartureDate)));
-    //         $nextMonthSegment['PreferredDepartureTime'] =   $DayYear . "-" . $DayMonth . "-" . "01" . "T" . "00:00:00";
-    //         $nextMonthSegment['PreferredArrivalTime'] =   $DayYear . "-" . $DayMonth . "-" . "01" . "T" . "00:00:00";
-    //      }
-    //   }
-      
-      
-    //   $preferredairlines = null;
-    //   if (isset($input['PreferredCarriers'])) {
-    //      $preferredairlines = $input['PreferredCarriers'];
-    //   }
-    //   $sources = null;
-
-    //   $request[0] = array(
-    //      'EndUserIp'         => $input['UserIp'],
-    //      'TokenId'           => $this->TokenId,
-    //      'JourneyType'       => intval($input['JourneyType']),
-    //      'PreferredAirlines' => $preferredairlines,
-    //      'Segments'          => $segments,
-    //      'Sources'           => $sources
-    //   );
-      
-      
-    //   if(!empty($currentDateSegment)){
-    //      $request[1] =  $request[0];
-    //      $request[1]['Segments'] = array($currentDateSegment);
-    //   }
-     
-      
-    //   if (!empty($nextMonthSegment)) {
-    //      $request[2] =  $request[0];
-    //      $request[2]['Segments'] = array($nextMonthSegment);
-    //   }
     
     $totalPassenger = $input['Child'] + $input['Adult'] + $input['Infant'];
         $class = $input['CabinClass'];
-        
+        $todayDateOnly = date('Y-m-d');
+
         $segments = [];
         $request = [];
         
@@ -403,65 +338,43 @@ class TBOFlight extends BaseController
         
             $sources = null;
         
-            // Original request
-            $request[] = [
-                'EndUserIp'         => $input['UserIp'],
-                'TokenId'           => $this->TokenId,
-                'JourneyType'       => (int)$input['JourneyType'],
-                'PreferredAirlines' => $preferredairlines,
-                'Segments'          => $segments,
-                'Sources'           => $sources
-            ];
-        
             // Base segment
             $baseSegment = $segments[0];
-        
-            $currentMonth   = (int)date('n');
-            $departureMonth = (int)date('n', strtotime($DepartureDate));
-        
+
+            $currentMonth  = (int)date('n');
+            $currentYear   = (int)date('Y');
+
             /*
-             * If departure month is different from current month,
-             * create one request for today's date.
+             * Calendar always covers a rolling 12 months starting from
+             * TODAY's month/year - not the searched date's month. Anchoring
+             * on the searched date used to skip every month between today
+             * and a far-future departure date (e.g. searching 14-Jan-2027
+             * would jump straight to Jan 2027 and never request Dec 2026).
+             * Anchoring on today also means the departure date is always
+             * covered somewhere in this 12-month window.
              */
-            if ($currentMonth != $departureMonth) {
-        
-                $currentDateSegment = $baseSegment;
-        
-                $todayDate = date('Y-m-d') . 'T00:00:00';
-        
-                $currentDateSegment['PreferredDepartureTime'] = $todayDate;
-                $currentDateSegment['PreferredArrivalTime']   = $todayDate;
-        
-                $request[] = [
-                    'EndUserIp'         => $input['UserIp'],
-                    'TokenId'           => $this->TokenId,
-                    'JourneyType'       => (int)$input['JourneyType'],
-                    'PreferredAirlines' => $preferredairlines,
-                    'Segments'          => [$currentDateSegment],
-                    'Sources'           => $sources
-                ];
-            }
-        
-            /*
-             * Create requests for every remaining month
-             * of the departure year.
-             */
-        
-            $departureYear = (int)date('Y', strtotime($DepartureDate));
-        
-            for ($month = $departureMonth + 1; $month <= 12; $month++) {
-        
+            for ($i = 0; $i <= 11; $i++) {
+
+                $monthOffset = $currentMonth + $i;
+                $year  = $currentYear + intdiv($monthOffset - 1, 12);
+                $month = (($monthOffset - 1) % 12) + 1;
+
                 $monthSegment = $baseSegment;
-        
-                $segmentDate = sprintf(
-                    '%04d-%02d-01T00:00:00',
-                    $departureYear,
-                    $month
-                );
-        
+
+                // The current month (i = 0) must be requested with TODAY's
+                // exact date, not the 1st - the 1st is already in the past
+                // once we're past day 1, and TBO rejects a past departure
+                // date outright, losing the whole month instead of just its
+                // past days. Every later month is still fully in the
+                // future, so the 1st is used there to get that month's
+                // fares from day 1 onward.
+                $segmentDate = $i === 0
+                    ? $todayDateOnly . 'T00:00:00'
+                    : sprintf('%04d-%02d-01T00:00:00', $year, $month);
+
                 $monthSegment['PreferredDepartureTime'] = $segmentDate;
                 $monthSegment['PreferredArrivalTime']   = $segmentDate;
-        
+
                 $request[] = [
                     'EndUserIp'         => $input['UserIp'],
                     'TokenId'           => $this->TokenId,
@@ -477,14 +390,20 @@ class TBOFlight extends BaseController
       $TBOFlightModel = new TBOFlightModel();
       $TTS_Result = array();
       $custom_index = array();
+
+      // All months are requested in parallel (one cURL multi batch) instead
+      // of one by one - with up to 12 months now, a sequential loop would
+      // take roughly 12x as long as the slowest single request.
+      $url = "$this->AirService_URL/rest/GetCalendarFare/";
+      $responses = TBO_MultiCurl_Request($url, $request);
+
       foreach ($request as $supperkey => $requestData) {
-         $url = "$this->AirService_URL/rest/GetCalendarFare/";
-         $response = TBO_Request($url, $requestData);
+         $response = $responses[$supperkey] ?? null;
         //  if ($response['Response']['Error']['ErrorCode'] == 0) {
         if (isset($response['Response']['Error']['ErrorCode']) && $response['Response']['Error']['ErrorCode'] == 0){
             $ErrorCode = 0;
             $ErrorMessage = '';
-            $results = $response['Response']['SearchResults'];
+            $results = $response['Response']['SearchResults'] ?? null;
             if ($results) {
                foreach ($results as $key => $result) {
                   $Calendar  =  array(
@@ -498,14 +417,27 @@ class TBOFlight extends BaseController
                }
             }
          } else {
-            $ErrorCode = $response['Response']['Error']['ErrorCode'];
-            $ErrorMessage = $response['Response']['Error']['ErrorMessage'];
+            // $response can be null here if that month's request timed out
+            // or TBO errored on the connection itself (not just a business
+            // error), since TBO_MultiCurl_Request() never dies mid-batch.
+            $ErrorCode = $response['Response']['Error']['ErrorCode'] ?? 1;
+            $ErrorMessage = $response['Response']['Error']['ErrorMessage'] ?? 'No response from supplier for this month.';
          }
          /*--------------Start Insert API Logs------------------*/
          $TBOFlightModel->insert_flight_logs($userauthdata['web_partner_id'], $tts_search_token, $request, $response, 'CalendarFare', 'TBO', strtotime(Time::now($this->GetTimeZone)));
          /*--------------End Insert API Logs--------------------*/
       }
-      
+
+      // $ErrorCode/$ErrorMessage above only hold whichever month was
+      // processed LAST in the loop (e.g. a far-future month TBO has no
+      // fares for yet), even when earlier months did return real data.
+      // Report overall success whenever at least one month came back
+      // with results; only surface an error when nothing was found at all.
+      if (!empty($TTS_Result)) {
+         $ErrorCode = 0;
+         $ErrorMessage = '';
+      }
+
               // Make API result date-wise
         $calendar = array();
         
@@ -539,12 +471,25 @@ class TBOFlight extends BaseController
                     $i
                 );
         
-                if (isset($calendar[$currentDate])) {
-        
+                // Dates before today are past - never show real fare data
+                // for them, even if TBO's reply for the current month
+                // happened to include them.
+                if ($currentDate < $todayDateOnly) {
+
+                    $FinalResult[] = array(
+                        'AirlineCode'         => '',
+                        'AirlineName'         => '',
+                        'DepartureDate'       => $currentDate,
+                        'IsLowestFareOfMonth' => false,
+                        'Fare'                => 0
+                    );
+
+                } elseif (isset($calendar[$currentDate])) {
+
                     $FinalResult[] = $calendar[$currentDate];
-        
+
                 } else {
-        
+
                     $FinalResult[] = array(
                         'AirlineCode'         => '',
                         'AirlineName'         => '',
